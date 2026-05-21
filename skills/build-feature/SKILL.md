@@ -15,6 +15,7 @@ You are executing a pre-made implementation plan. Do NOT re-plan from scratch. F
    - If no argument → list all files in `.claude/plans/` and ask the user which plan to execute. If there's only one plan, use it automatically.
 
 2. If the plan file doesn't exist or `.claude/plans/` is empty:
+
    > No plan found. Run `/plan-feature [description]` first to create one, then come back here to build it.
 
    Stop here.
@@ -26,7 +27,7 @@ You are executing a pre-made implementation plan. Do NOT re-plan from scratch. F
    > [one-line description from the plan]
    > [N] phases, [M] total tasks. [K already completed — resuming from Phase X, Task Y.]
    >
-   > Starting now. I'll pause if I hit anything unexpected.
+   > Starting now. I'll pause after each phase for your review before continuing.
 
 ## Step 2: Execute Phase by Phase
 
@@ -48,6 +49,7 @@ For each phase in the plan, in order:
    > **Phase N complete: [title]**
    >
    > **What changed:**
+   >
    > - `path/to/file.ts` — [one-line summary]
    > - ...
    >
