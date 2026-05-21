@@ -10,11 +10,28 @@ You are creating an implementation plan. You will NOT write any implementation c
 
 ## Step 1: Understand the Request
 
-Restate what the user wants in your own words. If anything is genuinely ambiguous (not just minor details), ask ONE round of clarifying questions before proceeding. For minor details, pick the most reasonable default and note your assumption.
+Restate what the user wants in your own words in 2–3 sentences.
+
+Then **always** run a structured clarification interview before doing any research or writing any plan. Your goal is to surface every assumption and decision point now, so you don't have to revise the plan later.
+
+Ask about as many of these dimensions as apply to the feature — group related questions together, and skip any that are clearly irrelevant:
+
+- **Scope & success criteria:** What does "done" look like? What's explicitly out of scope?
+- **User flow:** Walk through the happy path step by step. Who does what, in what order?
+- **Edge cases & errors:** What happens when input is invalid / missing / malformed? What if a network call or DB write fails? Are there retry or rollback needs?
+- **Data:** What data needs to be stored, read, or transformed? Any schema changes?
+- **Integrations:** Does this touch auth, payments, emails, third-party APIs, background jobs, or any existing feature area?
+- **UI/UX:** Any specific layout, loading states, empty states, or responsive behavior?
+- **Permissions & access control:** Who can access this? Any role or ownership checks?
+- **Performance & scale:** Any volume, latency, or caching concerns?
+- **Testing expectations:** Are there specific scenarios or edge cases you want covered by tests?
+- **Anything you're unsure about:** Is there any part of the feature you haven't fully decided yet?
+
+Do NOT proceed to Step 2 until the user has answered. Once you have answers, briefly confirm your understanding in a short bullet-list summary, then ask: "Does this capture everything? Anything to add or change?" Only move forward after they confirm.
 
 ## Step 2: Research
 
-Use subagents or direct exploration to understand the codebase:
+Use subagents or direct exploration to understand the codebase. Be thorough — missing a relevant file now means a plan revision later.
 
 - What is the project structure? (frameworks, languages, key directories)
 - Are there existing patterns for similar features? (auth, routing, state, API calls, DB access, tests)
@@ -22,8 +39,22 @@ Use subagents or direct exploration to understand the codebase:
 - Are there any CLAUDE.md, README, or architecture docs?
 - What testing patterns exist? (framework, conventions, coverage)
 - Check recent git history — are there in-flight changes or PRs touching the same areas? The plan should account for concurrent work.
+- Are there any existing types, interfaces, or schemas the new feature must conform to?
+- Are there any shared utilities, hooks, middleware, or services this feature should reuse?
 
 If the feature involves a library, API, or technique you're unsure about, search docs or the web. Don't guess.
+
+## Step 2.5: Think Before Writing
+
+Before drafting the plan, reason through these questions internally:
+
+- Are there any dependencies between tasks that could trip up the builder if ordered wrong?
+- Are there any implicit requirements the user didn't mention but that must be true for the feature to work? (e.g., a new API route needs auth middleware, a DB query needs a migration first)
+- Are there any edge cases from the clarification answers that don't yet have a task assigned to them?
+- Is there anything that could break existing functionality?
+- Are there any tasks that are larger than they appear and should be split?
+
+If this reasoning surfaces anything significant, add it to the plan's Notes section and flag it clearly.
 
 ## Step 3: Create the Plan
 
