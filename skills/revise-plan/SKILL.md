@@ -35,7 +35,15 @@ You are NOT building. You are NOT re-planning from scratch. You are editing the 
 
 ## Step 2: Understand the Change
 
-If the user's change request is clear, restate it in one sentence and proceed. If vague (`"update the plan"` with no specifics), ask ONE round of clarifying questions.
+Restate the user's change request in one sentence. Then **always** run a targeted clarification interview before touching the plan. Since the plan already exists, keep questions focused on the revision itself — don't re-litigate the whole feature. Ask about as many of these as apply, grouped together:
+
+- **Scope of change:** Is this the full extent of the revision, or are there related tasks that should also be updated at the same time?
+- **Built code fate:** If the change affects a task marked `[x]`, should the existing code be removed, rewritten, or kept as-is? (Don't guess — wrong choice either leaves dead code or deletes something still needed.)
+- **Cascading impact:** Does this change affect other tasks elsewhere in the plan? Should those tasks be updated, cleared, or left alone?
+- **New constraints:** Any new libraries, patterns, or architectural decisions the revised tasks should follow that differ from the current plan?
+- **Success criteria:** What does "done" look like after the revision? How will you know the plan reflects what you want?
+
+Skip questions that are clearly irrelevant (e.g., no need to ask about built code fate if all affected tasks are `[ ]`). Do NOT proceed to Step 3 until the user has answered. Once you have answers, briefly confirm your understanding in 2–3 bullet points, then ask: "Does this capture the revision? Anything to add or change?" Only move forward after they confirm.
 
 Classify the change — this determines Step 3 scope:
 
