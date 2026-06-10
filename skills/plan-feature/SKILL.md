@@ -110,8 +110,10 @@ Guidelines for tasks:
 
 ## Step 4: Save the Plan
 
-1. Create the directory `.claude/plans/` if it doesn't exist.
-2. Save the plan as `.claude/plans/[feature-name].md` using a kebab-case slug derived from the feature name (e.g., `user-notifications.md`, `oauth-login.md`). If a plan with the same name already exists, ask the user whether to overwrite it or use a different name.
+Plans live in the **repository**, not the user's home directory. The plans directory is `.claude/plans/` at the **repo root** — resolve it with `git rev-parse --show-toplevel` (or use the project working directory if not a git repo). Never write to `~/.claude/` — that is the user's global Claude config folder, and plans saved there are invisible to `/build-feature` running in the repo. Always use the absolute path `<repo-root>/.claude/plans/` when creating and writing files.
+
+1. Create the directory `<repo-root>/.claude/plans/` if it doesn't exist.
+2. Save the plan as `<repo-root>/.claude/plans/[feature-name].md` using a kebab-case slug derived from the feature name (e.g., `user-notifications.md`, `oauth-login.md`). If a plan with the same name already exists, ask the user whether to overwrite it or use a different name.
 3. Tell the user:
 
 > **Plan saved to `.claude/plans/[feature-name].md`**

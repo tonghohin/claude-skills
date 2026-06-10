@@ -16,6 +16,8 @@ You are NOT building. You are NOT re-planning from scratch. You are editing the 
 
 ## Step 1: Load the Plan
 
+Plans live in `.claude/plans/` at the **repo root** (resolve with `git rev-parse --show-toplevel`), not in the user's home `~/.claude/` folder. Read from and write back to that repo path only.
+
 1. Parse the argument. The first whitespace-separated token may be a plan name (e.g., `oauth-login`). Everything after it is the change request.
    - If the first token matches a file in `.claude/plans/`, treat it as the plan name and the rest as the change request.
    - Otherwise treat the whole argument as the change request and resolve the plan name as below.

@@ -11,7 +11,7 @@ You are reviewing code changes. Your job is to catch problems before they ship �
 ## Step 1: Identify What to Review
 
 1. Check if the user provided a feature name or branch as an argument.
-   - If a feature name → check if `.claude/plans/[feature-name].md` exists. If it does, load it — you'll review against the plan.
+   - If a feature name → check if `.claude/plans/[feature-name].md` exists at the **repo root** (not the user's home `~/.claude/` folder). If it does, load it — you'll review against the plan.
    - If a branch → review the diff between that branch and main/master.
    - If no argument → review uncommitted changes (staged + unstaged). If there are none, review the most recent commit.
 

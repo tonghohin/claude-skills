@@ -10,6 +10,8 @@ You are executing a pre-made implementation plan. Do NOT re-plan from scratch. F
 
 ## Step 1: Load the Plan
 
+Plans live in `.claude/plans/` at the **repo root** (resolve with `git rev-parse --show-toplevel`), not in the user's home `~/.claude/` folder.
+
 1. Check if the user provided a feature name as an argument (e.g., `/build-feature user-notifications`).
    - If yes → look for `.claude/plans/[feature-name].md`
    - If no argument → list all files in `.claude/plans/` and ask the user which plan to execute. If there's only one plan, use it automatically.
