@@ -4,9 +4,9 @@ description: "Review code changes for bugs, edge cases, security issues, and pat
 argument-hint: "[feature-name or branch]"
 ---
 
-# Review Feature — Analyze → Flag Issues → Suggest Fixes
+# Review Feature — Analyze → Challenge → Flag Issues → Suggest Fixes
 
-You are reviewing code changes. Your job is to catch problems before they ship — not to nitpick style or add unnecessary suggestions.
+You are reviewing code changes. Your job is to catch problems before they ship. Be thorough and adversarial — assume bugs exist and look until you find them or can prove they don't.
 
 ## Step 1: Identify What to Review
 
@@ -18,12 +18,13 @@ You are reviewing code changes. Your job is to catch problems before they ship �
 2. Gather the changes:
    - Use `git diff` for uncommitted changes, or `git diff main...HEAD` for branch changes, or `git show` for the last commit.
    - Read the full content of every changed file — diffs alone miss context like missing imports or broken callers.
+   - Also read files that call into the changed code — a change that looks correct in isolation can break callers.
 
 3. Display what you're reviewing:
    > **Reviewing: [feature name / branch / last commit]**
    > [N] files changed, [additions] additions, [deletions] deletions.
 
-## Step 2: Analyze
+## Step 2: First-Pass Analysis
 
 Review the changes across these dimensions, in order of priority:
 
@@ -52,7 +53,31 @@ Review the changes across these dimensions, in order of priority:
 - Do the changes follow existing codebase patterns? (naming, file structure, error handling, logging)
 - Are there new patterns introduced that diverge from the rest of the codebase?
 
-## Step 3: Report
+## Step 3: Adversarial Self-Check
+
+After your first pass, switch roles. You are now an attacker and a skeptic trying to break this code and poke holes in your own review.
+
+Work through each of these challenges:
+
+**Challenge your "looks fine" conclusions:**
+For every section where you found no issues, ask: "Am I confident, or did I just not look hard enough?" Re-examine the riskiest parts — auth logic, data mutations, external calls, error paths.
+
+**Try to break it:**
+- What's the worst input a user could send? What happens?
+- What if two requests hit this code at the same time?
+- What if a dependency returns null, throws, or times out unexpectedly?
+- What if the caller ignores the return value or error?
+
+**Challenge your findings:**
+For every issue you flagged, ask: "Is this actually a bug, or am I misreading the context?" Drop any finding you can't defend with specifics.
+
+**Look for what's missing:**
+- Is there logic that should exist but doesn't? (missing validation, missing error handling, missing cleanup)
+- Are there callers or consumers of this code that will now behave incorrectly?
+
+If the self-check surfaces new issues, add them to your findings. If it invalidates a finding, remove it.
+
+## Step 4: Report
 
 Organize findings by severity:
 
@@ -73,7 +98,7 @@ For each finding:
 
 If there are no findings in a category, skip it — don't say "no issues found" for each one.
 
-## Step 4: Plan Check (if applicable)
+## Step 5: Plan Check (if applicable)
 
 If a plan file was loaded, add a section:
 
@@ -82,7 +107,7 @@ If a plan file was loaded, add a section:
 > - **Deviations:** [what was changed and why, if detectable]
 > - **Missing from plan:** [any tasks from the plan not reflected in the changes]
 
-## Step 5: Summary
+## Step 6: Summary
 
 > **Review complete: [feature name]**
 >
@@ -92,8 +117,9 @@ If a plan file was loaded, add a section:
 
 ## Principles
 
-- **Focus on what matters.** Bugs and security issues first. Don't waste the user's time with style nits or suggestions to add comments.
+- **Assume bugs exist.** The goal is to find them, not to confirm the code looks okay. Look until you can prove something is correct, not just until nothing jumps out.
 - **Be specific.** "This might have issues" is useless. "Line 42: `userId` can be null here because `getUser()` returns `null` when the session expires" is useful.
 - **Show the fix.** Don't just point out problems — show what the fix looks like.
-- **Don't pad the review.** If the code is solid, say so. A short review with no issues is a good outcome, not a sign you didn't look hard enough.
 - **Read full files, not just diffs.** A change that looks fine in isolation may break something elsewhere in the same file or in callers.
+- **Challenge yourself.** If your first pass found nothing, that's a signal to look harder — not to wrap up.
+- **Only drop a finding if you can disprove it.** Don't remove something because it feels minor — remove it only if you can show it's not actually a problem.
