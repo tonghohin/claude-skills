@@ -33,7 +33,7 @@ Before changing anything:
 3. If there are no tests covering the code being refactored, tell the user:
    > **No test coverage for this code.** I'll add tests for the current behavior before refactoring so we can verify nothing breaks. This adds a task but makes the refactor safe.
 
-   Then write those tests first, as a separate step.
+   Then write those tests first, as a separate step. Type-checking and linting don't count as a baseline — they don't show behavior stayed the same.
 
 ## Step 3: Plan the Refactor
 
@@ -46,6 +46,8 @@ Outline the changes before making them:
 >
 > **Files affected:** [list]
 > **Risk:** [low/medium — what could break]
+
+Order the steps so that removal comes first: delete dead code, one-caller wrappers, and redundant checks, then reshape what's left. Each reshape should remove branches or invalid states, not just add indirection.
 
 Keep the plan short. If the refactor needs more than ~8 steps, suggest splitting it into smaller refactors.
 
@@ -66,6 +68,7 @@ For each step in the plan:
    - No new failures introduced.
 2. **Run linting and type-checking** if applicable.
 3. **Spot-check behavior** — if the refactored code has a UI or CLI surface, verify it still works the same way.
+4. **Confirm it was worth it.** Compare before and after: is there less to read or hold in your head to follow this code? If not, revert that part and say so in the summary.
 
 ## Step 6: Summarize
 

@@ -76,7 +76,7 @@ The rules below cover both built (`[x]`) and unbuilt (`[ ]`) tasks. For unbuilt 
 
 **Modified task (body/approach changes):**
 - Rewrite the task body in place.
-- If the task was `[x]`: clear it to `[ ]`. The built code no longer matches the spec; `/build-feature` will redo it. Add a `**Replaces previous build:**` line in the task body so the builder knows to remove/rewrite existing code, not create from scratch. Specify which files/functions to touch.
+- If the task was `[x]`: clear it to `[ ]` and delete its `Evidence` line, which no longer proves anything. The built code no longer matches the spec; `/build-feature` will redo it. Add a `**Replaces previous build:**` line in the task body so the builder knows to remove/rewrite existing code, not create from scratch. Specify which files/functions to touch.
 
 **Removed task:**
 - Delete the task from the plan entirely.

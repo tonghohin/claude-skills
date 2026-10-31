@@ -2,7 +2,7 @@
 
 A set of skills for structured development with Claude Code: plan before you build, revise plans as scope shifts, and review, debug, or refactor existing code with repeatable workflows.
 
-The core loop is plan → build, with `/revise-plan` for mid-flight changes. The remaining skills cover review, debugging, refactoring, and learning a new codebase — each is a standalone workflow, usable on its own.
+The core loop is plan → build, with `/revise-plan` for mid-flight changes. The remaining skills cover review, debugging, refactoring, learning a new codebase, and stopping recurring mistakes — each is a standalone workflow, usable on its own.
 
 ## How the plan → build loop works
 
@@ -10,6 +10,7 @@ The core loop is plan → build, with `/revise-plan` for mid-flight changes. The
 /plan-feature add user notifications with email and in-app support
     │
     ├── Researches your codebase (structure, patterns, conventions)
+    ├── Works out how to run and check the app
     ├── Creates a detailed task breakdown
     └── Saves to .claude/plans/user-notifications.md
 
@@ -20,7 +21,8 @@ The core loop is plan → build, with `/revise-plan` for mid-flight changes. The
     │
     ├── Reads the saved plan
     ├── Executes each task in order, skipping any already marked [x]
-    ├── Verifies each task works before moving on
+    ├── Verifies each task for real and saves the evidence in the plan
+    ├── Runs an independent /review-feature and fixes Critical findings
     └── Updates the plan file with completion details
 ```
 
@@ -29,12 +31,13 @@ The core loop is plan → build, with `/revise-plan` for mid-flight changes. The
 | Skill | Trigger | What it does |
 |-------|---------|--------------|
 | `/plan-feature` | "plan", "scope", "break down", "design" | Research codebase → create task plan → save to `.claude/plans/` |
-| `/build-feature` | "build", "implement", "execute", "go" | Load plan from `.claude/plans/` → execute tasks → verify → summarize |
+| `/build-feature` | "build", "implement", "execute", "go" | Load plan from `.claude/plans/` → execute tasks → verify → independent review → summarize |
 | `/revise-plan` | "change the plan", "add a task to", "swap X for Y" | Edit an existing plan; preserves `[x]` markers so in-flight builds resume cleanly |
 | `/review-feature` | "review", "check my code", "audit" | Review changes for bugs, edge cases, security, and consistency |
 | `/debug-issue` | "debug", "fix this bug", "why is this broken" | Structured debugging: reproduce → isolate → fix → verify |
 | `/refactor` | "refactor", "clean up", "restructure" | Plan and execute a refactor with a test baseline |
 | `/learn-codebase` | "walk me through", "onboard me", "explain this repo" | Deep dive: explore the repo → trace real flows → save a record to `.claude/learn/` |
+| `/correct` | "correct", "you did this again", "stop making this mistake" | Find repeated mistakes → fix each at the strongest level → prove the check fails on a past mistake |
 
 ## Install
 
@@ -44,7 +47,7 @@ The core loop is plan → build, with `/revise-plan` for mid-flight changes. The
 bash install.sh
 ```
 
-This copies all seven skills to `~/.claude/skills/`.
+This copies all eight skills to `~/.claude/skills/`.
 
 ### Option B: Project skills (shared with your team via git)
 
@@ -57,6 +60,7 @@ cp -r skills/review-feature .claude/skills/review-feature
 cp -r skills/debug-issue    .claude/skills/debug-issue
 cp -r skills/refactor       .claude/skills/refactor
 cp -r skills/learn-codebase .claude/skills/learn-codebase
+cp -r skills/correct        .claude/skills/correct
 git add .claude/skills/
 git commit -m "Add Claude Code skills"
 ```
@@ -79,7 +83,7 @@ Claude researches your codebase, produces a task plan, and saves it to `.claude/
 /build-feature oauth-login
 ```
 
-Claude reads the plan, executes each task, verifies it works, and moves on. When done, it updates the plan file with a completion summary.
+Claude reads the plan, executes each task, runs its check, saves the command and output under the task as evidence, and moves on. If a check can't run, the task stays unchecked and is reported as unverified. Once all phases are done, a fresh subagent reviews the build: Critical findings get fixed, and Warnings and Suggestions come back for you to decide on. Claude then updates the plan file with a completion summary.
 
 If you run `/build-feature` without a name, it'll list available plans and let you pick one. If the plan has some tasks already marked `[x]`, it resumes from the first incomplete task.
 
@@ -113,7 +117,7 @@ Runs the unchecked tasks — including any cleanup tasks — so plan and code co
 /review-feature
 ```
 
-Reviews the pending diff against a plan if one exists, or reviews standalone changes otherwise.
+Reviews the pending diff against a plan if one exists, or reviews standalone changes otherwise. Each Critical or Warning finding says how far it was proven, from a cited line up to a reproduction in the running app.
 
 ### Debug an issue
 
@@ -121,7 +125,7 @@ Reviews the pending diff against a plan if one exists, or reviews standalone cha
 /debug-issue the /api/users endpoint returns 500 when the body is empty
 ```
 
-Runs a structured debugging workflow: reproduce → isolate → fix → verify.
+Runs a structured debugging workflow: reproduce → isolate → fix → verify. If a bug won't reproduce at first, Claude tries recreating the trigger or adding temporary logging before asking you.
 
 ### Refactor
 
@@ -130,6 +134,14 @@ Runs a structured debugging workflow: reproduce → isolate → fix → verify.
 ```
 
 Establishes a test baseline, plans the refactor, and executes it without changing behavior.
+
+### Correct a recurring mistake
+
+```
+/correct plans keep getting saved to the wrong folder
+```
+
+Finds where the mistake has happened before, then fixes it at the strongest level that works: architecture, types, a lint or CI check, a test, and docs only as a last resort. Each new check is proven against a real past mistake, and the rule goes in a table in `CLAUDE.md`. With no argument, it searches for repeats and asks which to fix before changing anything.
 
 ### Learn a codebase
 

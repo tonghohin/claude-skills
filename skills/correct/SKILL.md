@@ -1,0 +1,86 @@
+---
+name: correct
+description: "Find the mistakes that keep recurring in a repo and fix each one at the strongest level that works, so the next session can't repeat it. Use when the user says 'correct', 'stop making this mistake', 'I keep telling you', 'you did this again', 'make sure this never happens again', 'why do I keep having to fix this', or corrects the same thing twice, even if they don't say 'correct'."
+argument-hint: "[mistake to fix, or leave empty to search for repeats]"
+---
+
+# Correct — Find Repeats → Fix at the Strongest Level → Prove It
+
+You are stopping a recurring mistake for good. A rule in a doc only works if the reader remembers it, so prefer a fix that makes the mistake impossible or makes it fail loudly.
+
+Assume the next contributor sees only the files it opened, copies the nearest example, and takes the shortest path that compiles. Design for that reader.
+
+## Step 1: Find the Mistakes
+
+If the user named a mistake, start there, then look for earlier instances of it.
+
+Otherwise, search for repeats in:
+
+- Recent commits, especially reverts and follow-up fixes (`git log`).
+- Review comments on recent PRs, if the repo has them.
+- `CLAUDE.md`, agent rules, and code comments that explain workarounds.
+- Saved memories, and corrections in this conversation.
+
+Group what you find into classes of mistake. A class counts once it has happened twice. Anything that happened once is a one-off, so leave it out unless the user named it.
+
+Show the classes with their evidence, most frequent first:
+
+> **Mistake:** [the class, in one line]
+> **Evidence:** [commits, comments, or files where it happened]
+> **Proposed level:** [from Step 2]
+
+Wait for the user to pick which classes to fix. Don't change anything until they do.
+
+## Step 2: Pick the Strongest Level That Works
+
+Try these in order, and stop at the first one that works:
+
+1. **Architecture:** make the mistake impossible. Give each piece of state one owner and each task one supported way. Hide internals so the wrong import fails. Replace hand-synced lists with one source of truth. Delete old patterns someone could copy.
+2. **Types:** make the bad state unwritable, so it doesn't compile.
+3. **Lint or CI check:** fail when the mistake appears, with an error that names what to use instead. If the pattern is already common, fail only when a change adds more.
+4. **Test:** assert the behavior. Fix or delete tests that keep passing when the behavior breaks.
+5. **Docs or agent rules:** only for judgment calls nothing can check. Nothing fails when someone skips these.
+
+If the mistake is in a skill, plan template, or other prompt, a clearer instruction may be the only option. Say so, and put the instruction at the step where the mistake happens rather than in a general list.
+
+## Step 3: Fix and Prove
+
+For each chosen class:
+
+1. Make the fix as one self-contained change.
+2. Prove the check works: run it against a real past mistake and confirm it fails, then confirm it passes on the corrected code. A check you haven't seen fail proves nothing.
+3. Run the existing tests, lint, and type-checking.
+
+Docs-level fixes can't be proven this way. Label them "not enforced".
+
+## Step 4: Record the Rule
+
+Keep a table in the project's `CLAUDE.md` pairing each rule with what enforces it, and create the section if it's missing:
+
+```markdown
+## Enforced Rules
+
+| Rule | Enforced by |
+|------|-------------|
+| Dates go through `formatDate` | lint rule `no-raw-date` |
+| Plans live at the repo root | not enforced (docs only) |
+```
+
+If a rule was already there and the mistake happened anyway, it's a repeat, so move it to a stronger level. Remove a rule once its mistake can no longer happen.
+
+## Step 5: Report
+
+> **Corrected: [N] mistake classes**
+>
+> **[Mistake]:** fixed at [level] — [why a stronger level wouldn't work]
+> **Proof:** [the check failing on the past mistake, then passing]
+>
+> **Not enforced:** [rules that rely on docs alone, or "none"]
+
+## Principles
+
+- **Two strikes.** One mistake is noise. Two is a class. Don't add rules for one-offs.
+- **Enforcement over instruction.** More text is the weakest fix, so use it last.
+- **Errors should teach.** A failing check should name the file, type, or function to use instead.
+- **Prove with history.** Test each check against a mistake that really happened, not an invented one.
+- **Fewer rules is better.** Every rule costs attention. Delete the ones that no longer earn their place.

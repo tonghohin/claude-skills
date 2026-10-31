@@ -19,6 +19,7 @@ You are reviewing code changes. Your job is to catch problems before they ship. 
    - Use `git diff` for uncommitted changes, or `git diff main...HEAD` for branch changes, or `git show` for the last commit.
    - Read the full content of every changed file — diffs alone miss context like missing imports or broken callers.
    - Also read files that call into the changed code — a change that looks correct in isolation can break callers.
+   - Then look where a symbol search stops: JSON an API returns, DB columns, wire formats, feature flags, other languages reading the same data, and the pinned source of any library the change depends on.
 
 3. Display what you're reviewing:
    > **Reviewing: [feature name / branch / last commit]**
@@ -48,6 +49,7 @@ Review the changes across these dimensions, in order of priority:
 - Do the changes include tests? If not, should they?
 - Do existing tests still pass with these changes?
 - Are tests covering the important behavior, not just the happy path?
+- Judge each new or changed test against two imagined edits. Break the behavior: if the test still passes, it proves nothing. Keep the behavior but restructure the internals: if the test now fails, it's pinned to the implementation.
 
 ### Pattern Consistency
 - Do the changes follow existing codebase patterns? (naming, file structure, error handling, logging)
@@ -77,7 +79,23 @@ For every issue you flagged, ask: "Is this actually a bug, or am I misreading th
 
 If the self-check surfaces new issues, add them to your findings. If it invalidates a finding, remove it.
 
-## Step 4: Report
+## Step 4: Prove What Matters
+
+A review that sounds right reads the same whether or not it's true, so check the claims that matter most.
+
+1. **Find the safety fact.** Most risky-looking changes are safe because of one fact, like "this call only drops expired cache entries". State that fact. If it holds, many risks clear at once.
+2. **Take each claim as far as is cheap.** Do this for the safety fact and for every Critical or Warning finding, and record where it stopped:
+   1. **Stated:** you said so. Worth nothing alone.
+   2. **Cited:** you pointed at a real `file:line` or the library's source.
+   3. **Traced:** you walked the failure step by step.
+   4. **Ran:** a test or script calls the real code and shows the result.
+   5. **Reproduced:** you saw it in the running app.
+3. **Spot-check the build's evidence.** If the plan has `Evidence` lines, re-run the checks for the riskiest tasks rather than trusting them. If a result doesn't match, or a `[x]` task has no evidence, report it as a finding. Flag any `Unverified` task too.
+4. **Keep the repo clean.** Put throwaway scripts outside the repo, and don't leave changes behind. Reviewing doesn't include fixing.
+
+A claim you can't prove stays in the report, labeled with the level it reached.
+
+## Step 5: Report
 
 Organize findings by severity:
 
@@ -94,11 +112,12 @@ For each finding:
 - **What:** one-line description of the issue.
 - **Where:** file path and line number(s).
 - **Why:** what goes wrong if this isn't fixed.
+- **Proof:** the level it reached in Step 4, with the command and output if you ran something. Critical and Warning findings only.
 - **Fix:** concrete suggestion — show the code change, don't just describe it.
 
 If there are no findings in a category, skip it — don't say "no issues found" for each one.
 
-## Step 5: Plan Check (if applicable)
+## Step 6: Plan Check (if applicable)
 
 If a plan file was loaded, add a section:
 
@@ -107,11 +126,13 @@ If a plan file was loaded, add a section:
 > - **Deviations:** [what was changed and why, if detectable]
 > - **Missing from plan:** [any tasks from the plan not reflected in the changes]
 
-## Step 6: Summary
+## Step 7: Summary
 
 > **Review complete: [feature name]**
 >
 > [Critical: N] [Warnings: N] [Suggestions: N]
+>
+> **Safe because:** [the safety fact, and the level it reached — or "unproven"]
 >
 > [One sentence overall assessment — is this ready to ship, or does it need work?]
 
@@ -120,6 +141,7 @@ If a plan file was loaded, add a section:
 - **Assume bugs exist.** The goal is to find them, not to confirm the code looks okay. Look until you can prove something is correct, not just until nothing jumps out.
 - **Be specific.** "This might have issues" is useless. "Line 42: `userId` can be null here because `getUser()` returns `null` when the session expires" is useful.
 - **Show the fix.** Don't just point out problems — show what the fix looks like.
+- **Prove, don't persuade.** A claim you ran beats a claim you argued. Always say which one you're giving.
 - **Read full files, not just diffs.** A change that looks fine in isolation may break something elsewhere in the same file or in callers.
 - **Challenge yourself.** If your first pass found nothing, that's a signal to look harder — not to wrap up.
 - **Only drop a finding if you can disprove it.** Don't remove something because it feels minor — remove it only if you can show it's not actually a problem.

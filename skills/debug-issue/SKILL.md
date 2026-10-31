@@ -25,7 +25,8 @@ You are debugging an issue. Follow a structured approach — don't guess and pat
 1. Try to reproduce the issue. Run the relevant command, test, or workflow.
 2. If you can reproduce it:
    > **Reproduced.** [describe what you saw — error message, wrong output, etc.]
-3. If you can't reproduce it, say so and explain what you tried. Ask the user for more details before proceeding.
+3. If you can't reproduce it at first, keep trying before you ask the user. Recreate the trigger with a script or test, tighten the conditions (same input, same data, same timing), or add temporary logging and read what the code actually does. If a `run` skill or a project verification skill is available, use it.
+4. If it still won't reproduce, tell the user what you tried and what specifically is stopping you, then ask for the detail you need. Remove any temporary logging before you finish.
 
 Do NOT skip this step. Fixing a bug you can't reproduce is guessing.
 
@@ -41,6 +42,8 @@ Narrow down the root cause. Work from the symptom backward:
 
 If your first hypothesis doesn't hold, form a new one. Don't tunnel-vision on your first guess.
 
+**If two fixes fail the same way, stop fixing.** Write down the one assumption both fixes shared, then find an observation that would come out differently if it were false, and make it. Don't write a third fix until you've tested that assumption.
+
 ## Step 4: Fix
 
 1. **Announce the fix before writing it:**
@@ -48,12 +51,18 @@ If your first hypothesis doesn't hold, form a new one. Don't tunnel-vision on yo
    > **File(s):** [paths]
    > **Why this fixes it:** [brief explanation connecting the fix to the root cause]
 
-2. **Make the minimal change.** Fix the bug, nothing else. Don't refactor surrounding code, don't "improve" nearby logic, don't add unrelated error handling.
+2. **Fix it where it went wrong, not where it surfaced.** Ask whether the state that triggered the bug is legitimate. If it is, handle it in the code that broke. If it should never exist, a guard there only hides the bug, so find what produced the state.
 
-3. **Write a test for the bug** if the project has test infrastructure. The test should:
-   - Fail before the fix (or would have, given the bug condition).
+3. **Make the minimal change.** Fix the bug, nothing else. Don't refactor surrounding code, don't "improve" nearby logic, don't add unrelated error handling. Revert anything added for a hypothesis that turned out to be wrong.
+
+4. **Write a test for the bug** if the project has test infrastructure. The test should:
+   - Be written and run before the fix, and fail for the intended reason. If it passes or fails for another reason, correct it first.
    - Pass after the fix.
    - Be a unit test unless the bug specifically involves cross-boundary behavior.
+
+   If a cheap test isn't practical, say so and use the closest check you can run, like a script or a repro command.
+
+5. **Check for the same fault elsewhere.** Look for other code with the same pattern. Fix it if it's part of this bug; otherwise list it in the report.
 
 ## Step 5: Verify
 
@@ -69,9 +78,11 @@ If your first hypothesis doesn't hold, form a new one. Don't tunnel-vision on yo
 >
 > **Fix:** [what you changed and in which files]
 >
-> **Test:** [test added, or why not]
+> **Test:** [test added and how it failed before the fix, or why not]
 >
 > **Verified:** [how you confirmed it works]
+>
+> **Same fault elsewhere:** [where else it appears, or "none found"]
 
 ## Principles
 

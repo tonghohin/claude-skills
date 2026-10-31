@@ -14,7 +14,7 @@ Restate what the user wants in your own words in 2–3 sentences.
 
 Then **always** run a structured clarification interview before doing any research or writing any plan. Your goal is to surface every assumption and decision point now, so you don't have to revise the plan later.
 
-Ask about as many of these dimensions as apply to the feature — group related questions together, and skip any that are clearly irrelevant:
+Ask about as many of these dimensions as apply to the feature — group related questions together, and skip any that are clearly irrelevant. Use the interview for decisions only the user can make. If the answer is a fact you can get by reading or running the code, find it out during research instead of asking.
 
 - **Scope & success criteria:** What does "done" look like? What's explicitly out of scope?
 - **User flow:** Walk through the happy path step by step. Who does what, in what order?
@@ -44,6 +44,14 @@ Use subagents or direct exploration to understand the codebase. Be thorough — 
 
 If the feature involves a library, API, or technique you're unsure about, search docs or the web. Don't guess.
 
+Then work out how an agent can check this work for real, because every Verify step depends on it:
+
+- **Run:** How does the app start locally, and how do you tell it's ready? What ports, env vars, or seed data does it need?
+- **Drive:** How can an agent use the feature the way a user would? Look for existing options first: test suites, Playwright specs, CLI commands, HTTP endpoints. If a `run` skill or a project verification skill is available, use it.
+- **Observe:** What shows it worked? Command output, response bodies, logs, stored data, screenshots.
+
+Try what you find, as long as it has no side effects, so the plan rests on commands you've seen work. Don't install anything or change data to do this; record what you couldn't try and why.
+
 ## Step 2.5: Think Before Writing
 
 Before drafting the plan, reason through these questions internally:
@@ -72,6 +80,18 @@ Write a plan document with this structure:
 - **Key files:** [list the 3-8 most relevant existing files/dirs]
 - **New dependencies:** [any new packages needed, or "none"]
 - **Risks/Considerations:** [edge cases, breaking changes, migrations]
+
+## Data Shape
+
+[The core types, schemas, and state this feature adds or changes, and who owns each. Tasks build on these. Write "no new data" if nothing changes.]
+
+## How to Verify
+
+- **Run:** [command to start the app, and how to tell it's ready]
+- **Drive:** [how to use it like a user: test command, CLI, HTTP call, browser tool]
+- **Observe:** [where the proof comes from: output, logs, stored data, screenshots]
+- **Clean up:** [how to stop what was started]
+- **Tried during planning:** [what you ran and what happened, plus anything you couldn't try and why]
 
 ## Tasks
 
@@ -105,7 +125,7 @@ Guidelines for tasks:
 - **3-8 tasks per phase.** A small feature may have a single phase. For larger features, group tasks into phases (e.g., "Phase 1: Data Layer", "Phase 2: API", "Phase 3: UI"). Each phase should be a cohesive chunk of work that can be verified as a unit.
 - Each task should touch **1-3 files** and be **independently verifiable**.
 - Order by dependency — foundational phases first, then tasks within each phase.
-- The verify step should be concrete: a command to run, a behavior to check, not "make sure it works."
+- The verify step should be concrete: a command to run, a behavior to check, not "make sure it works." Name the result you'd actually see, such as the output, response, or screen state. When a task has a user-facing surface, passing tests alone aren't enough: check the real thing. Build each verify step on the commands in How to Verify, so an agent can run it without help.
 - **Each phase should include a testing task.** Prefer unit tests over integration/e2e tests — they're faster and cheaper. Only add integration or e2e tests when the feature genuinely requires testing across boundaries (e.g., API + DB, multi-step UI flows). Don't write tests for trivial glue code or simple pass-through logic.
 
 ## Step 4: Save the Plan
