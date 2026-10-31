@@ -2,7 +2,7 @@
 
 A set of skills for structured development with Claude Code: plan before you build, revise plans as scope shifts, and review, debug, or refactor existing code with repeatable workflows.
 
-The core loop is plan → build, with `/revise-plan` for mid-flight changes. The remaining skills cover review, debugging, and refactoring — each is a standalone workflow, usable on its own.
+The core loop is plan → build, with `/revise-plan` for mid-flight changes. The remaining skills cover review, debugging, refactoring, and learning a new codebase — each is a standalone workflow, usable on its own.
 
 ## How the plan → build loop works
 
@@ -34,6 +34,7 @@ The core loop is plan → build, with `/revise-plan` for mid-flight changes. The
 | `/review-feature` | "review", "check my code", "audit" | Review changes for bugs, edge cases, security, and consistency |
 | `/debug-issue` | "debug", "fix this bug", "why is this broken" | Structured debugging: reproduce → isolate → fix → verify |
 | `/refactor` | "refactor", "clean up", "restructure" | Plan and execute a refactor with a test baseline |
+| `/learn-codebase` | "walk me through", "onboard me", "explain this repo" | Deep dive: explore the repo → trace real flows → save a record to `.claude/learn/` |
 
 ## Install
 
@@ -43,7 +44,7 @@ The core loop is plan → build, with `/revise-plan` for mid-flight changes. The
 bash install.sh
 ```
 
-This copies all six skills to `~/.claude/skills/`.
+This copies all seven skills to `~/.claude/skills/`.
 
 ### Option B: Project skills (shared with your team via git)
 
@@ -55,6 +56,7 @@ cp -r skills/revise-plan    .claude/skills/revise-plan
 cp -r skills/review-feature .claude/skills/review-feature
 cp -r skills/debug-issue    .claude/skills/debug-issue
 cp -r skills/refactor       .claude/skills/refactor
+cp -r skills/learn-codebase .claude/skills/learn-codebase
 git add .claude/skills/
 git commit -m "Add Claude Code skills"
 ```
@@ -128,6 +130,14 @@ Runs a structured debugging workflow: reproduce → isolate → fix → verify.
 ```
 
 Establishes a test baseline, plans the refactor, and executes it without changing behavior.
+
+### Learn a codebase
+
+```
+/learn-codebase how billing works
+```
+
+Explores the repo, traces the key execution flows, and writes up how it all works in `.claude/learn/billing.md` without stopping to ask questions. The argument is optional; without one it covers the whole project in `overview.md`. Each record notes the commit it was written against, and running the skill again updates the existing record. It doesn't change any code.
 
 ## The plans directory
 
