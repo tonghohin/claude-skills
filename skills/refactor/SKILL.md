@@ -1,6 +1,6 @@
 ---
 name: refactor
-description: "Plan and execute a refactoring of existing code. Use when the user says 'refactor', 'clean up', 'restructure', 'reorganize', 'extract', 'simplify', 'rename', 'move', 'split', 'consolidate', or wants to improve code structure without changing behavior."
+description: "Plan and execute a structural refactor of existing code against a test baseline. Use when the user says 'refactor', 'restructure', 'reorganize', 'split this file', 'extract this into', 'consolidate', or wants to improve code structure without changing behavior. Not for one-line renames or small edits."
 argument-hint: "<what to refactor and why>"
 ---
 
@@ -59,7 +59,7 @@ For each step in the plan:
 
 1. **Make the change.** Match existing codebase patterns — don't introduce new conventions during a refactor.
 2. **Run tests after each step.** If tests fail, fix the regression before moving on. If you can't fix it, revert the step and tell the user.
-3. **Update imports and callers.** Refactors often break references — check all usages of anything you renamed, moved, or deleted.
+3. **Update imports and callers.** Refactors often break references — check all usages of anything you renamed, moved, or deleted, including re-exports and string references in configs and tests.
 
 ## Step 5: Verify
 
@@ -86,8 +86,4 @@ For each step in the plan:
 ## Principles
 
 - **Behavior stays the same.** If the user wants to change behavior AND refactor, do them separately — refactor first, then change behavior. Mixing the two makes bugs impossible to attribute.
-- **Tests are your safety net.** Run them constantly. If there's no coverage, add it before refactoring. A refactor without tests is a rewrite.
-- **Small steps.** Each change should be independently verifiable. Don't make a massive change and hope tests catch everything.
 - **Don't over-refactor.** Stop when the code is clear and maintainable. Chasing "perfect" structure creates churn with diminishing returns. If the user asked to extract a helper, extract the helper — don't also reorganize the entire module.
-- **Update all references.** Renaming a function is easy. Finding every caller is the actual work. Search the codebase thoroughly — grep for the old name, check re-exports, look for string references in configs and tests.
-- **Get buy-in before executing.** Show the plan, wait for a go-ahead. The user may have context about why the code is structured the way it is.

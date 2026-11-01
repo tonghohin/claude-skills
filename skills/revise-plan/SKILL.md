@@ -40,7 +40,7 @@ Plans live in `.claude/plans/` at the **repo root** (resolve with `git rev-parse
 Restate the user's change request in one sentence. Then **always** run a targeted clarification interview before touching the plan. Since the plan already exists, keep questions focused on the revision itself — don't re-litigate the whole feature. Ask about as many of these as apply, grouped together:
 
 - **Scope of change:** Is this the full extent of the revision, or are there related tasks that should also be updated at the same time?
-- **Built code fate:** If the change affects a task marked `[x]`, should the existing code be removed, rewritten, or kept as-is? (Don't guess — wrong choice either leaves dead code or deletes something still needed.)
+- **Built code fate:** If the change affects a task marked `[x]`, should the existing code be removed, rewritten, or kept as-is?
 - **Cascading impact:** Does this change affect other tasks elsewhere in the plan? Should those tasks be updated, cleared, or left alone?
 - **New constraints:** Any new libraries, patterns, or architectural decisions the revised tasks should follow that differ from the current plan?
 - **Success criteria:** What does "done" look like after the revision? How will you know the plan reflects what you want?
@@ -136,9 +136,4 @@ This is the only breadcrumb kept in the plan itself. Full history lives in git.
 
 ## Principles
 
-- **The plan is a spec, not a log.** After revision it must read as current desired state. No supersede markers. No "old task 2.1" left in place. Git carries history — the file doesn't need to.
 - **Surgical edits, not rewrites.** Change what the user asked. Don't "improve" wording, reorder for style, or tighten unrelated task descriptions.
-- **`[x]` is a claim that code exists matching this task.** If the revision breaks that claim, either clear `[x]` (task will be rebuilt) or add a cleanup task (code will be removed). Never leave an `[x]` whose body no longer describes reality.
-- **Cleanup tasks are real tasks.** They have a body, a file list, and a Verify step. They are how the plan tells `/build-feature` "delete this."
-- **Research only the delta.** Don't re-scan the codebase for simple removals or reorders.
-- **No implementation code.** Same rule as `/plan-feature`. Revising the plan is not the same as building the delta — that's what `/build-feature` is for.

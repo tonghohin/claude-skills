@@ -1,5 +1,5 @@
 #!/bin/bash
-# Install build-feature and plan-feature skills for Claude Code
+# Install all skills in this repo for Claude Code
 # Run: bash install.sh
 
 SKILL_DIR="$HOME/.claude/skills"
@@ -42,5 +42,5 @@ echo ""
 echo "Open Claude Code and type /build-feature or /plan-feature to use them."
 echo ""
 echo "To install as PROJECT-scoped skills instead (shared with your team):"
-echo "  cp -r build-feature/ .claude/skills/build-feature/"
-echo "  cp -r plan-feature/ .claude/skills/plan-feature/"
+echo "  mkdir -p .claude/skills"
+echo "  cp -r \"$SCRIPT_DIR/skills/\"* .claude/skills/"

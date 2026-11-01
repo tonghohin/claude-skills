@@ -31,13 +31,15 @@ The core loop is plan → build, with `/revise-plan` for mid-flight changes. The
 | Skill | Trigger | What it does |
 |-------|---------|--------------|
 | `/plan-feature` | "plan", "scope", "break down", "design" | Research codebase → create task plan → save to `.claude/plans/` |
-| `/build-feature` | "build", "implement", "execute", "go" | Load plan from `.claude/plans/` → execute tasks → verify → independent review → summarize |
+| `/build-feature` | Manual: type `/build-feature` | Load plan from `.claude/plans/` → execute tasks → verify → independent review → summarize |
 | `/revise-plan` | "change the plan", "add a task to", "swap X for Y" | Edit an existing plan; preserves `[x]` markers so in-flight builds resume cleanly |
 | `/review-feature` | "review", "check my code", "audit" | Review changes for bugs, edge cases, security, and consistency |
 | `/debug-issue` | "debug", "fix this bug", "why is this broken" | Structured debugging: reproduce → isolate → fix → verify |
-| `/refactor` | "refactor", "clean up", "restructure" | Plan and execute a refactor with a test baseline |
+| `/refactor` | "refactor", "restructure", "split this file" | Plan and execute a refactor with a test baseline |
 | `/learn-codebase` | "walk me through", "onboard me", "explain this repo" | Deep dive: explore the repo → trace real flows → save a record to `.claude/learn/` |
-| `/correct` | "correct", "you did this again", "stop making this mistake" | Find repeated mistakes → fix each at the strongest level → prove the check fails on a past mistake |
+| `/correct` | Manual: type `/correct` | Find repeated mistakes → fix each at the strongest level → prove the check fails on a past mistake |
+
+`/build-feature` and `/correct` change code across a project, so they only run when you type them. The others can also start from what you say.
 
 ## Install
 

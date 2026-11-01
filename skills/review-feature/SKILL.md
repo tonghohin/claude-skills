@@ -138,10 +138,7 @@ If a plan file was loaded, add a section:
 
 ## Principles
 
-- **Assume bugs exist.** The goal is to find them, not to confirm the code looks okay. Look until you can prove something is correct, not just until nothing jumps out.
 - **Be specific.** "This might have issues" is useless. "Line 42: `userId` can be null here because `getUser()` returns `null` when the session expires" is useful.
-- **Show the fix.** Don't just point out problems — show what the fix looks like.
 - **Prove, don't persuade.** A claim you ran beats a claim you argued. Always say which one you're giving.
-- **Read full files, not just diffs.** A change that looks fine in isolation may break something elsewhere in the same file or in callers.
 - **Challenge yourself.** If your first pass found nothing, that's a signal to look harder — not to wrap up.
 - **Only drop a finding if you can disprove it.** Don't remove something because it feels minor — remove it only if you can show it's not actually a problem.

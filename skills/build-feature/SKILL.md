@@ -1,6 +1,7 @@
 ---
 name: build-feature
-description: "Execute an implementation plan created by /plan-feature. Use when the user says 'build', 'implement', 'execute', 'start building', 'build it', 'go', or references a plan they want executed. Reads a saved plan from .claude/plans/, then implements each task with verification. If no plan exists, directs the user to run /plan-feature first."
+description: "Execute an implementation plan created by /plan-feature. Reads a saved plan from .claude/plans/, implements each task with recorded evidence, then runs an independent review. If no plan exists, directs the user to run /plan-feature first."
+disable-model-invocation: true
 argument-hint: "[feature-name]"
 ---
 
@@ -89,7 +90,7 @@ After all phases are done:
 Review the build with fresh eyes before reporting it done. Only do this once all phases are complete.
 
 1. Spawn a fresh subagent and have it run the `/review-feature` skill. Give it the plan path and the list of files changed in this build, and leave out your build reasoning — it should judge the code, not your explanation of it. If you can't spawn a subagent, run the review yourself and say in the summary that it wasn't independent.
-2. Fix every Critical finding. Don't fix Warnings or Suggestions; they go in the summary for the user to decide on.
+2. Fix Critical findings in code this build wrote or changed. A Critical bug that was already there is outside the plan, so report it instead of fixing it. Warnings and Suggestions also go in the summary for the user to decide on.
 3. If you fixed anything, re-run the tests and do one more fresh review of those fixes.
 4. Stop there, even if the second review finds more. Report what's left as open issues rather than starting another round.
 
@@ -130,8 +131,6 @@ Review the build with fresh eyes before reporting it done. Only do this once all
 ## Principles
 
 - **Follow the plan.** Don't add scope, refactor unrelated code, or introduce patterns not in the plan. If you spot something worth improving, note it in the follow-up items.
-- **Match existing patterns.** Use the conventions described in the plan's Research Summary. If the plan says the codebase uses a service layer, use a service layer.
-- **Re-read before writing.** Each task may run in a context where you haven't seen the files recently. Always read the relevant files fresh before making changes.
 - **Check the real thing.** Verify against the running code, not a proxy. Never hand the user a check you could have run yourself.
 - **Keep the user informed but not overwhelmed.** Show task start/complete announcements. Don't narrate every file read or search.
 - **If something goes wrong,** explain what happened, what you tried, and propose a fix. Don't silently retry in a loop. If a task is blocked, pause and ask the user.

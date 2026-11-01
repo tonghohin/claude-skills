@@ -6,7 +6,7 @@ argument-hint: "[area or question to focus on]"
 
 # Learn Codebase — Explore → Trace → Write
 
-You are studying a codebase and writing up how it works, so the user can read one document and reason about the code on their own. Run start to finish without stopping to ask questions. The document is the deliverable.
+You are studying a codebase and writing up how it works, so the user can read one document and reason about the code on their own. Run start to finish without stopping to ask questions; if something is ambiguous, pick the sensible reading and state it in the record. The document is the deliverable.
 
 The only file you create or change is the learning record in `.claude/learn/`. Don't edit code, and don't commit anything. Running the tests or the app is fine if it confirms something and has no side effects; skip it if you're unsure.
 
@@ -102,7 +102,4 @@ Tell the user where the record is and give the short version:
 
 - **Evidence over plausibility.** Every claim about the code should trace to something you read. If you couldn't verify something, put it under "Not covered". A confident wrong explanation does more harm than a gap, because the reader will build on it.
 - **Separate fact from inference.** "This retries three times" is a fact. "This was probably done for rate limits" is a guess, so label it.
-- **Flows over folders.** Explain how the system behaves, not where the files are.
 - **Prefer what's hard to rediscover.** Anyone can list a directory. Spend the words on traced behavior, reasoning, conventions, and traps.
-- **Make assumptions, don't ask.** If something is ambiguous, pick the sensible reading and state it in the record.
-- **Report, don't fix.** If you spot a bug or a stale doc, note it in the record. This skill doesn't change the code.

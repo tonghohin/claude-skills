@@ -1,6 +1,7 @@
 ---
 name: correct
-description: "Find the mistakes that keep recurring in a repo and fix each one at the strongest level that works, so the next session can't repeat it. Use when the user says 'correct', 'stop making this mistake', 'I keep telling you', 'you did this again', 'make sure this never happens again', 'why do I keep having to fix this', or corrects the same thing twice, even if they don't say 'correct'."
+description: "Find the mistakes that keep recurring in a repo and fix each one at the strongest level that works, so the next session can't repeat it. Prefers architecture, types, and lint checks over written rules, and proves each check fails on a real past mistake."
+disable-model-invocation: true
 argument-hint: "[mistake to fix, or leave empty to search for repeats]"
 ---
 
@@ -76,11 +77,3 @@ If a rule was already there and the mistake happened anyway, it's a repeat, so m
 > **Proof:** [the check failing on the past mistake, then passing]
 >
 > **Not enforced:** [rules that rely on docs alone, or "none"]
-
-## Principles
-
-- **Two strikes.** One mistake is noise. Two is a class. Don't add rules for one-offs.
-- **Enforcement over instruction.** More text is the weakest fix, so use it last.
-- **Errors should teach.** A failing check should name the file, type, or function to use instead.
-- **Prove with history.** Test each check against a mistake that really happened, not an invented one.
-- **Fewer rules is better.** Every rule costs attention. Delete the ones that no longer earn their place.

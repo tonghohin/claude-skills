@@ -1,6 +1,6 @@
 ---
 name: debug-issue
-description: "Structured debugging workflow for tracking down and fixing bugs. Use when the user says 'debug', 'fix this bug', 'why is this broken', 'investigate', 'not working', 'something is wrong', 'error', 'failing', or describes unexpected behavior they need help resolving."
+description: "Structured debugging workflow for tracking down and fixing bugs. Use when the user says 'debug', 'fix this bug', 'why is this broken', 'not working', 'something is wrong', or describes unexpected behavior they need resolved. Not for quick questions about what an error message means."
 argument-hint: "<description of the issue>"
 ---
 
@@ -86,9 +86,5 @@ If your first hypothesis doesn't hold, form a new one. Don't tunnel-vision on yo
 
 ## Principles
 
-- **Reproduce first.** Never skip straight to reading code and guessing. A reproducible bug is a solvable bug.
-- **Read the actual error.** Don't skim the stack trace — read it. The answer is usually in there.
 - **Trace, don't grep.** Searching for keywords finds where code lives. Tracing execution finds why it breaks. Do both, but prioritize tracing.
 - **One fix at a time.** If you change three things and the bug goes away, you don't know which one fixed it. Make one change, verify, repeat if needed.
-- **Minimal fix.** A bug fix is not a refactoring opportunity. Fix the bug. If you spot other problems, note them for later.
-- **State your hypothesis.** Saying "I think X is wrong because Y" out loud catches bad reasoning faster than silently editing code.
