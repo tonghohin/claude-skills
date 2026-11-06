@@ -1,0 +1,16 @@
+{
+  "name": "dev",
+  "version": "1.0.0",
+  "description": "Structured development skills: plan, build, revise, review, debug, refactor, learn a codebase, and correct recurring mistakes.",
+  "author": {
+    "name": "Hin"
+  },
+  "repository": "https://github.com/tonghohin/skills",
+  "keywords": [
+    "planning",
+    "workflow",
+    "review",
+    "debugging",
+    "refactoring"
+  ]
+}

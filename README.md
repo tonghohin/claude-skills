@@ -43,31 +43,57 @@ The core loop is plan → build, with `/revise-plan` for mid-flight changes. The
 
 ## Install
 
-### Option A: Personal skills (available in all your projects)
+This repo is a Claude Code plugin marketplace. Install the plugin once and it's available in all your projects:
 
-```bash
-bash install.sh
+```
+/plugin marketplace add tonghohin/skills
+/plugin install dev@tonghohin-skills
 ```
 
-This copies all eight skills to `~/.claude/skills/`.
-
-### Option B: Project skills (shared with your team via git)
+Or from the shell:
 
 ```bash
-mkdir -p .claude/skills
-cp -r skills/plan-feature   .claude/skills/plan-feature
-cp -r skills/build-feature  .claude/skills/build-feature
-cp -r skills/revise-plan    .claude/skills/revise-plan
-cp -r skills/review-feature .claude/skills/review-feature
-cp -r skills/debug-issue    .claude/skills/debug-issue
-cp -r skills/refactor       .claude/skills/refactor
-cp -r skills/learn-codebase .claude/skills/learn-codebase
-cp -r skills/correct        .claude/skills/correct
-git add .claude/skills/
-git commit -m "Add Claude Code skills"
+claude plugin marketplace add tonghohin/skills
+claude plugin install dev@tonghohin-skills
 ```
 
-Only include the skills you want — each directory is independent.
+Skills are namespaced by the plugin, so you can type either `/plan-feature` or `/dev:plan-feature`.
+
+### Updating
+
+After pushing changes to this repo, pull them in with:
+
+```bash
+claude plugin marketplace update tonghohin-skills
+claude plugin update dev@tonghohin-skills
+```
+
+Then restart Claude Code. Bump `version` in `.claude-plugin/plugin.json` (and the matching entry in `.claude-plugin/marketplace.json`) when you release changes, so the update is picked up.
+
+### Developing locally
+
+To try edits without pushing, load the plugin straight from your checkout:
+
+```bash
+claude --plugin-dir /path/to/skills
+```
+
+### Sharing with a team
+
+Add the marketplace and plugin to a project's `.claude/settings.json` so teammates get prompted to install it:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "tonghohin-skills": {
+      "source": { "source": "github", "repo": "tonghohin/skills" }
+    }
+  },
+  "enabledPlugins": {
+    "dev@tonghohin-skills": true
+  }
+}
+```
 
 ## Usage
 
@@ -169,7 +195,7 @@ You can `.gitignore` this directory or commit it — up to you. Committing plans
 
 ## Customization
 
-All skills are plain markdown — edit them to fit your workflow:
+All skills are plain markdown in `skills/` — edit them to fit your workflow (test with `claude --plugin-dir .`, then push and update):
 
 - **Add project-specific conventions** (e.g., "always create a migration file", "run `pnpm test` after each task")
 - **Change the plan format** to match your issue tracker

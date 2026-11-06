@@ -1,0 +1,17 @@
+{
+  "name": "tonghohin-skills",
+  "owner": {
+    "name": "Hin"
+  },
+  "metadata": {
+    "description": "Hin's Claude Code skills for structured development."
+  },
+  "plugins": [
+    {
+      "name": "dev",
+      "source": "./",
+      "description": "Structured development skills: plan, build, revise, review, debug, refactor, learn a codebase, and correct recurring mistakes.",
+      "version": "1.0.0"
+    }
+  ]
+}
